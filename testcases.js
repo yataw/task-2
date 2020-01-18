@@ -105,7 +105,28 @@ const tests = [
     "content": [
         { "block": "button", "mods": { "size": "m" } },
         {"block": "text", "mods": {"size": "l"}},
-        { "block": "placeholder", "mods": { "size": "m" } }
+        { "block": "placeholder", "mods": { "size": "xl" } }
+    ]
+}
+    `,
+
+
+    `
+    {
+    "block": "warning",
+    "content": [
+        {"block": "text", "mods": {"size": "l"}},
+        { "block": "placeholder", "mods": { "size": "m" }}
+    ]
+}
+    `,
+
+    `
+    {
+    "block": "warning",
+    "content": [
+        {"block": "text", "mods": {"size": "l"}},
+        { "block": "placeholder", "mods": { "size": "xl" }}
     ]
 }
     `
