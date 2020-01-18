@@ -11,6 +11,14 @@ class TextSizes extends RuleBase {
         this.currentSize = null;
     }
 
+    getHandlers() {
+        return {
+            [this.phases.in]: this.in.bind(this),
+            [this.phases.out]: this.out.bind(this),
+            [this.phases.end]: this.end.bind(this),
+        }
+    }
+
     in(node) {
         this.visited = true;
 

@@ -3,7 +3,7 @@
  */
 
 import {parse} from 'json-source-map';
-import PROPS from './props.js';
+import PROPS from './propnames.js';
 
 const {CONTENT} = PROPS;
 
