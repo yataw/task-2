@@ -33,6 +33,7 @@ class Linter {
 
         // TODO filter errors
         return this.serializeErrors();
+        // return this.errors;
     }
 
     init() {
