@@ -1,7 +1,5 @@
 import RuleBase from "../rulebase.js";
 import {Size, get} from "../utils.js";
-import {WarningInvalidButtonSize} from "../../error/errorlist.js";
-import {NoTextNode} from "../../error/system.js";
 import {GridTooMuchMarketingBlocks} from "../../error/errorlist";
 
 const marketingBlocks = ['commercial', 'offer'];

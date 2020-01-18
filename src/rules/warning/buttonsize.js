@@ -62,9 +62,8 @@ class ButtonSize extends RuleBase {
         this.textNodes.delete(warning);
         this.buttonNodes.delete(warning);
 
-        // TODO предполагаем, что текстовые ноды обязаны быть, т.к. иначе эталонный размер не определен и поедут другие правила. Проверить предположение.
         if (!firstTextNode)
-            throw new NoTextNode();
+            return;
 
         const sizeValA = get(firstTextNode.mods, 'size');
         const size = new Size(sizeValA);

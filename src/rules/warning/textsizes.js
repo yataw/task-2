@@ -48,10 +48,8 @@ class TextSizes extends RuleBase {
 
         this.textNodes.delete(warning);
 
-        // TODO error emitting
-        // TODO предполагаем, что текстовые ноды обязаны быть, т.к. иначе эталонный размер не определен и поедут другие правила. Проверить предположение.
         if (!textNodes)
-            throw new NoTextNode();
+            return;
 
         const [first, ...other] = textNodes;
         const sizeValA = get(first.mods, 'size');
