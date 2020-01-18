@@ -40,9 +40,21 @@ class RuleMediator {
     call(phase, bemNode) {
         const key = this.getKey(phase, bemNode.selector);
         const handlers = this.handlersMap[key] || [];
-        const errors = handlers.map(handler => handler(bemNode));
+        let errors = [];
 
-        return errors.filter(result => result);
+        handlers.forEach(handler => {
+            const handlerErrors = handler(bemNode);
+
+            if (!handlerErrors)
+                return;
+
+            if (Array.isArray(handlerErrors))
+                errors = [...handlerErrors, ...errors];
+            else
+                errors.push(handlerErrors);
+        });
+
+        return errors;
     }
 
     callAll(phase) {

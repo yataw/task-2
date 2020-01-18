@@ -83,7 +83,9 @@ const tests = [
     "block": "warning",
     "content": [
         { "block": "text", "mods": { "size": "l" } },
-        { "block": "button", "mods": { "size": "s" } }
+        { "block": "button", "mods": { "size": "s" } },
+        { "block": "button", "mods": { "size": "xl" } },
+        { "block": "button", "mods": { "size": "l" } }
     ]
 }
     `,
@@ -129,6 +131,37 @@ const tests = [
         { "block": "placeholder", "mods": { "size": "xl" }}
     ]
 }
+    `,
+
+
+    `
+    [
+    {
+        "block": "text",
+        "mods": { "type": "h1" }
+    },
+    {
+        "block": "text",
+        "mods": { "type": "h1" }
+    }
+]
+    `,
+
+    `
+    [
+    {
+        "block": "text",
+        "mods": { "type": "h2" }
+    },
+    {
+        "block": "text",
+        "mods": { "type": "h2" }
+    },
+    {
+        "block": "text",
+        "mods": { "type": "h1" }
+    }
+]
     `
 ];
 

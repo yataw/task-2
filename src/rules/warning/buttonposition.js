@@ -31,12 +31,17 @@ class ButtonPosition extends RuleBase {
         if (!warning)
             return;
 
+        // TODO считаем, что в блоке warning не более 1 button и не более 1 placeholer (хотя это не обязоно быть так)
+        // В противном случае, непонятно как их матчить друг с другом (например в такой ситуации: button, placeholder, button)
+        // и, соответственно, выдавать ошибки
         if (node.block === 'placeholder') {
             if (!this.placeholderNodes.has(warning)) {
+                const invalidButton = this.buttonNodes.get(warning);
+
                 this.placeholderNodes.set(warning, node);
 
-                if (this.buttonNodes.has(warning))
-                    return new WarningInvalidButtonPosition(warning.location);
+                if (invalidButton)
+                    return new WarningInvalidButtonPosition(invalidButton.location);
             }
 
             return;

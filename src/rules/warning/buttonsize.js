@@ -2,6 +2,7 @@ import RuleBase from "../rulebase.js";
 import {Size, get} from "../utils.js";
 import {WarningInvalidButtonSize} from "../../error/errorlist.js";
 import {NoTextNode} from "../../error/system.js";
+import {TextInvalidH2Position} from "../../error/errorlist";
 
 class ButtonSize extends RuleBase {
     constructor() {
@@ -70,13 +71,19 @@ class ButtonSize extends RuleBase {
 
         size.add(1);
 
+        const errors = [];
+
         for (let button of buttons) {
             const sizeValB = get(button.mods, 'size');
 
-            // Даже если в рамках одного блока несколько ошибочных слов, то вовращаем одну ошибку.
-            if (!size.check(sizeValB))
-                return new WarningInvalidButtonSize(node.location);
+            if (!size.check(sizeValB)) {
+                const error = new WarningInvalidButtonSize(button.location);
+
+                errors.push(error);
+            }
         }
+
+        return errors;
     }
 
     getLastWarning() {
