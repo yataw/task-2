@@ -8,9 +8,9 @@ import H2H3 from './text/h2h3.js'
 import TooMuch from './marketing/toomuch.js'
 
 const rules = [
-    TextSizes, ButtonSize, ButtonPosition, PlaceholderSize,
+    /*TextSizes, ButtonSize, ButtonPosition, PlaceholderSize,*/
     SeveralH1, H1H2, H2H3,
-    TooMuch
+    /*TooMuch*/
 ];
 
 export default rules;
