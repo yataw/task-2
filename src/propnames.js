@@ -3,5 +3,6 @@ export default {
     ELEM: "elem",
     CONTENT: "content",
     MODS: "mods",
-    MIX: "mix"
+    MIX: "mix",
+    ELEMMODS: 'elemMods'
 };

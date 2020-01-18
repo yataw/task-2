@@ -1,7 +1,7 @@
 import PROPS from './propnames.js';
 import JsonSourceMap from './jsonsourcemap.js';
 
-const {BLOCK, ELEM, CONTENT, MODS, MIX} = PROPS;
+const {BLOCK, ELEM, CONTENT, MODS, MIX, ELEMMODS} = PROPS;
 const locationKey = JsonSourceMap.key;
 
 class BemNode {
@@ -13,6 +13,7 @@ class BemNode {
         this.elem = node[ELEM];
         this.mods = node[MODS];
         this.mix = node[MIX];
+        this.elemMods = node[ELEMMODS]
 
         this.location = node[locationKey];
 
