@@ -32,7 +32,7 @@ class Linter {
         this.callAll(phases.end);
 
         // TODO filter errors
-        return this.errors;
+        return this.serializeErrors();
     }
 
     init() {
@@ -75,6 +75,22 @@ class Linter {
 
     addErrors(errors) {
         this.errors = [...errors, ...this.errors];
+    }
+
+    serializeErrors() {
+        return this.errors.map(({code, error, location}) => {
+            const {start, end} = location;
+            const serializedLocation = {"start": {}, "end": {}};
+
+            serializedLocation["start"] = {"column": location.start.col, "line": location.start.line};
+            serializedLocation["end"] = {"column": location.end.col, "line": location.end.line};
+
+            return {
+                "code": code,
+                "error": error,
+                "location": serializedLocation
+            }
+        });
     }
 
     contentAsArray(el) {
