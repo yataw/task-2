@@ -235,6 +235,27 @@ const tests = [
        }
    ]
 }
+    `,
+
+
+    `
+    {
+  "block": "warning",
+  "content": [
+      {
+        "block": "text",
+        "mods": { "type": "h1", "size": "l" }
+      },
+      {
+          "block": "text",
+          "mods": { "type": "h2", "size": "l" }
+      },
+      {
+        "block": "text",
+        "mods": { "type": "h1", "size": "l" }
+      }
+  ]
+}
     `
 ];
 

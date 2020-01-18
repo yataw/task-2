@@ -9,13 +9,6 @@ class InvalidInput extends Error {
     }
 }
 
-class NoTextNode extends Error {
-    constructor() {
-        super("At least 1 text node expected");
-    }
-}
-
 export {
-    InvalidInput,
-    NoTextNode
+    InvalidInput
 }

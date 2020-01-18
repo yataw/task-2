@@ -1,7 +1,6 @@
 import RuleBase from "../rulebase.js";
 import {Size, get} from "../utils.js";
 import {WarningTextSizeShouldBeEqual} from "../../error/errorlist.js";
-import {NoTextNode} from "../../error/system.js";
 
 class TextSizes extends RuleBase {
     constructor() {

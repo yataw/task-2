@@ -12,10 +12,10 @@ window.lint = function(str) {
 
 // TODO for test
 /*
-
-tests.forEach(test => {
+tests.forEach((test, ind) => {
     const res = window.lint(test);
 
+    console.log('test: ' + ind);
     console.log(res);
 })
 */

@@ -7,7 +7,6 @@ class H1H2 extends RuleBase {
         super(['text']);
 
         this.h2Nodes = [];
-        this.h1was = false;
     }
 
     getPhaseHandlersMap() {
@@ -28,10 +27,7 @@ class H1H2 extends RuleBase {
             return;
         }
 
-        // TODO Продолжаем анализировать только до первого h1
-        if (type === 'h1' && !this.h1was) {
-            this.h1was = true;
-
+        if (type === 'h1') {
             const errors = [];
 
             this.h2Nodes.forEach(node => {
@@ -40,8 +36,11 @@ class H1H2 extends RuleBase {
                 errors.push(error);
             });
 
-            if (errors.length)
+            if (errors.length) {
+                this.h2Nodes = [];
+
                 return errors;
+            }
         }
     }
 }
