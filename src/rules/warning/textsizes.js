@@ -1,6 +1,7 @@
 import RuleBase from "../rulebase.js";
 import {Size, get} from "../utils.js";
 import {WarningTextSizeShouldBeEqual} from "../../error/errorlist.js";
+import {NoTextNode} from "../../error/system.js";
 
 class TextSizes extends RuleBase {
     constructor() {
@@ -50,7 +51,7 @@ class TextSizes extends RuleBase {
         // TODO error emitting
         // TODO предполагаем, что текстовые ноды обязаны быть, т.к. иначе эталонный размер не определен и поедут другие правила. Проверить предположение.
         if (!textNodes)
-            throw "Invalid JSON";
+            throw new NoTextNode();
 
         const [first, ...other] = textNodes;
         const sizeValA = get(first.mods, 'size');

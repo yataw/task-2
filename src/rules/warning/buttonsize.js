@@ -1,6 +1,7 @@
 import RuleBase from "../rulebase.js";
 import {Size, get} from "../utils.js";
 import {WarningInvalidButtonSize} from "../../error/errorlist.js";
+import {NoTextNode} from "../../error/system.js";
 
 class ButtonSize extends RuleBase {
     constructor() {
@@ -60,10 +61,9 @@ class ButtonSize extends RuleBase {
         this.textNodes.delete(warning);
         this.buttonNodes.delete(warning);
 
-        // TODO error emitting
         // TODO предполагаем, что текстовые ноды обязаны быть, т.к. иначе эталонный размер не определен и поедут другие правила. Проверить предположение.
         if (!firstTextNode)
-            throw "Invalid JSON";
+            throw new NoTextNode();
 
         const sizeValA = get(firstTextNode.mods, 'size');
         const size = new Size(sizeValA);
