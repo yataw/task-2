@@ -25,7 +25,7 @@ class Size {
     }
 
     check(sizeB) {
-        return !!(this.size && sizeB) && this.size === size;
+        return !!(this.size && sizeB) && this.size === sizeB;
     }
 }
 

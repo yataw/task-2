@@ -1,52 +1,45 @@
 import PROPS from "./propnames.js";
 import JsonSourceMap from './jsonsourcemap.js';
 import BemNode from './bemnode.js';
-import {nullFunction} from './rules/rulebase.js';
+import RuleMediator from './rules/rulemediator.js';
+import RuleBase from "./rules/rulebase.js";
 
 const {CONTENT} = PROPS;
-const key = JsonSourceMap.key;
+const phases = RuleBase.prototype.phases;
 
 class Linter {
     /**
-     * @param {Array<!RuleBase>} rules
+     * @param {Array<!RuleBase>} ruleClasses
      */
-    constructor(rules = []) {
-        this.rules = rules;
+    constructor(ruleClasses = []) {
+        this.ruleClasses = ruleClasses;
+
+        this.mediator = null;
         this.errors = [];
-
-
-        this.fillHandlers();
-    }
-
-    fillHandlers() {
-        this.rules.forEach(rule => {
-            const selectors = rule.getFilter();
-
-            const inHandler = rule.in !== nullFunction ? rule.in.bind(rule) : null;
-            const outHandler = rule.out !== nullFunction ? rule.out.bind(rule) : null;
-            const endHandler = rule.end !== nullFunction ? rule.end.bind(rule) : null;
-
-            const handlers = [inHandler, outHandler, endHandler];
-            const maps = [this.handlersMap.in, this.handlersMap.out, this.handlersMap.end];
-
-            selectors.forEach(selector => {
-                handlers.forEach((handler, ind) => {
-
-                    maps[ind][selector]
-                })
-            })
-        })
     }
 
     /**
      * @param {string} str
      */
     lint(str) {
+        this.init();
+
         const stringTree = this.attachRoot(str);
         const mapper = new JsonSourceMap(stringTree);
         const root = mapper.getJson(stringTree);
 
         this.next(root);
+        this.callAll(phases.end);
+
+        // TODO filter errors
+        return this.errors;
+    }
+
+    init() {
+        const rulesInstances = this.ruleClasses.map(rClass => new rClass());
+
+        this.mediator = new RuleMediator(rulesInstances);
+        this.errors = [];
     }
 
     /* Вход может быть объектом или массивом (дерево или лес). Добавим виртуальный корень, всегда было дерево. */
@@ -59,25 +52,29 @@ class Linter {
         const bemNode = new BemNode(node);
         const children = this.contentAsArray(node[CONTENT]);
 
-        // this.call(bemNode, this.handlers.in);
+        this.call(phases.in, bemNode);
 
         children.map((child) => {
             this.next(child);
         });
 
-        this.out(bemNode);
+        this.call(phases.out, bemNode);
     };
 
-    in(bemNode) {
-        this.rules.forEach(rule => {
-            rule.in(bemNode);
-        })
+    call(phase, bemNode) {
+        const errors = this.mediator.call(phase, bemNode);
+
+        this.addErrors(errors);
     }
 
-    out(bemNode) {
-        this.rules.forEach(rule => {
-            rule.in(bemNode);
-        })
+    callAll(phase) {
+        const errors = this.mediator.callAll(phase);
+
+        this.addErrors(errors);
+    }
+
+    addErrors(errors) {
+        this.errors = [...errors, ...this.errors];
     }
 
     contentAsArray(el) {

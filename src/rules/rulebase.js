@@ -8,34 +8,18 @@ class RuleBase {
      */
     constructor(selectors = []) {
         this.selectors = selectors;
-        /** type {RuleBase.HandlersMapType} */
-        this.handlersMap = {[this.phases.in]: {}, [this.phases.out]: {}, [this.phases.end]: {}};
+    }
 
-        this._initHandlersMap();
+    getSelectors() {
+        return this.selectors;
     }
 
     /**
      * @return {Object<RuleBase.prototype.phases, RuleBase.HandlerType>}
      */
-    getHandlers() {
+    getPhaseHandlersMap() {
         // TODO error emitting
         throw "not implemented";
-    }
-
-    _initHandlersMap() {
-        const handlers = this.getHandlers();
-
-        for (let key in this.phases) {
-            const phase = this.phases[key];
-
-            this.selectors.forEach(selector => {
-                this.handlersMap[phase][selector] = handlers[phase];
-            });
-        }
-    }
-
-    getMap() {
-        return this.handlersMap;
     }
 }
 
@@ -49,7 +33,7 @@ RuleBase.prototype.phases = {
     end: 'end'
 };
 
-/** @typedef {function(!BemNode): (!LintError|undefined)} */
+/** @typedef {function(BemNode): (!LintError|undefined)} */
 RuleBase.HandlerType;
 
 /** @typedef {Object<RuleBase.prototype.phases, Object<string, RuleBase.HandlerType>>} */

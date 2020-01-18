@@ -1,24 +1,19 @@
 import Linter from './src/linter.js';
+import rules from './src/rules/list.js'
 
+// TODO for test
+import {tests, answers} from "./testcases.js";
 
-window.lint = Linter.lint;
+const linter = new Linter(rules);
+
+window.lint = function(str) {
+    return linter.lint(str);
+};
 
 // TODO for test
 
-console.log(window.lint(`{
-    "block": "form",
-    "content": [
-        {
-            "block": "form",
-            "elem": "label",
-            "content": {
-                "block": "text",
-                "mods": { "size": "xl" }
-            }
-        },
-        {
-            "block": "input",
-            "mods": { "size": "xxl" }
-        }
-    ]
-}`));
+tests.forEach(test => {
+    const res = window.lint(test);
+
+    console.log(res);
+})

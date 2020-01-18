@@ -6,39 +6,57 @@ class RuleMediator {
     constructor(rules) {
         this.rules = rules;
 
-        /** type {RuleBase.HandlersMapType} */
-        this.handlersMap = {[phases.in]: {}, [phases.out]: {}, [phases.end]: {}};
-
-        this.mergeHandlers();
+        this.handlersMap = {};
+        this.buildMap();
     }
 
-    mergeHandlers() {
-        for (let key in phases) {
-            const phase = phases[key];
+    buildMap() {
+        this.rules.forEach(rule => {
+            const selectors = rule.getSelectors();
+            const handlersMap = rule.getPhaseHandlersMap();
 
-            this.rules.forEach(rule => {
-                const phaseMap = rule.getMap()[phase];
-                const mergedHandlers = this.handlersMap[phase];
+            for (let phase in handlersMap) {
+                const handler = handlersMap[phase];
 
-                for (let selector in phaseMap) {
-                    const handler = phaseMap[selector];
+                selectors.forEach(selector => {
+                    const key = this.getKey(phase, selector);
 
-                    if (!handler)
-                        continue;
+                    if (!this.handlersMap[key])
+                        this.handlersMap[key] = [];
 
-                    if (!mergedHandlers[selector])
-                        mergedHandlers[selector] = [];
-
-                    mergedHandlers[selector].push(handler);
-                }
-
-            });
-        }
+                    this.handlersMap[key].push(handler);
+                })
+            }
+        });
     }
 
+    getKey(phase, selector) {
+        return phase + '$' + selector;
+    }
+
+    /**
+     * @return {Array<!LintError>}
+     */
     call(phase, bemNode) {
-        const handlers = this.handlersMap[phase][bemNode.selector] || [];
+        const key = this.getKey(phase, bemNode.selector);
+        const handlers = this.handlersMap[key] || [];
+        const errors = handlers.map(handler => handler(bemNode));
 
-        handlers.forEach(handler => handler(bemNode));
+        return errors.filter(result => result);
+    }
+
+    callAll(phase) {
+        const errors = [];
+
+        this.rules.forEach(rule => {
+            const handler = rule.getPhaseHandlersMap()[phase];
+
+            if (handler)
+                errors.push(handler(null));
+        });
+
+        return errors.filter(result => result);
     }
 }
+
+export default RuleMediator;

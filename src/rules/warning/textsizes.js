@@ -6,46 +6,67 @@ class TextSizes extends RuleBase {
     constructor() {
         super(['warning', 'text']);
 
-        this.visited = false;
-        this.wasSize = false;
-        this.currentSize = null;
+        // Считаем, что блоки warning могут быть вложенными. Каждая вложенный блок warning создает свой Error boundary.
+        this.warnings = []; // стек блоков warning
+        this.textNodes = new Map();
     }
 
-    getHandlers() {
+    getPhaseHandlersMap() {
         return {
             [this.phases.in]: this.in.bind(this),
-            [this.phases.out]: this.out.bind(this),
-            [this.phases.end]: this.end.bind(this),
+            [this.phases.out]: this.out.bind(this)
         }
     }
 
     in(node) {
-        this.visited = true;
-
-        if (node.block !== 'text')
-            return;
-
-        const size = get(node.mods, 'size');
-
-        if (!this.currentSize) {
-            this.currentSize = new Size(size);
+        if (node.block === 'warning') {
+            this.warnings.push(node);
 
             return;
         }
 
-        if (this.currentSize.check(size))
-            return new WarningTextSizeShouldBeEqual(node.location);
+        const warning = this.getLastWarning();
+
+        if (!warning)
+            return;
+
+        if (!this.textNodes.has(warning))
+            this.textNodes.set(warning, []);
+
+        let textNodes = this.textNodes.get(warning);
+
+        textNodes.push(node);
     }
 
     out(node) {
-        if (node.block === 'warning')
-            this.currentSize = null;
+        if (node.block !== 'warning')
+            return;
+
+        const warning = this.warnings.pop();
+        const textNodes = this.textNodes.get(warning);
+
+        // TODO error emitting
+        // TODO предполагаем, что текстовые ноды обязаны быть, т.к. иначе эталонный размер не определен и поедут другие правила. Проверить предположение.
+        if (!textNodes.length)
+            throw "Invalid JSON";
+
+        const [first, ...other] = textNodes;
+        const sizeValA = get(first.mods, 'size');
+        const size = new Size(sizeValA);
+
+        for (let text of other) {
+            const sizeValB = get(text.mods, 'size');
+
+            // Даже если в рамках одного блока несколько ошибочных слов, то вовращаем одну ошибку.
+            if (!size.check(sizeValB))
+                return new WarningTextSizeShouldBeEqual(node.location);
+        }
     }
 
-    end() {
-        // TODO error emitting
-        if (this.visited && !this.currentSize)
-            throw "Invalid JSON";
+    getLastWarning() {
+        const length = this.warnings.length;
+
+        return this.warnings[length - 1];
     }
 }
 
