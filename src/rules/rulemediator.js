@@ -52,9 +52,12 @@ class RuleMediator {
         handlers = [...handlers, ...this.alwaysCalledHandlers];
 
         handlers.forEach(handler => {
-            const handlerErrors = handler(bemNode);
+            try {
+                const handlerErrors = handler(bemNode);
 
-            errors = this.getMergedErrors(errors, handlerErrors);
+                errors = this.getMergedErrors(errors, handlerErrors);
+            } catch (e) {
+            }
         });
 
         return errors;
@@ -69,9 +72,12 @@ class RuleMediator {
             if (!handler)
                 return;
 
-            const handlerErrors = handler(null);
+            try {
+                const handlerErrors = handler(null);
 
-            errors = this.getMergedErrors(errors, handlerErrors);
+                errors = this.getMergedErrors(errors, handlerErrors);
+            } catch (e) {
+            }
         });
 
         return errors;

@@ -38,6 +38,9 @@ class JsonSourceMap {
     };
 
     match = (node, path) => {
+        if (!node)
+            return;
+
         const {value, valueEnd} = this.pointers[path];
 
         // +1 к col, т.к. библиотека ведет отсчет от 0.
@@ -45,10 +48,10 @@ class JsonSourceMap {
         const [start, end] = [value, valueEnd].map(val => ({line: val.line, column: val.column + 1}));
         const children = node[CONTENT];
 
-        node[positionKey] = {start, end};
-
         if (!children)
             return;
+
+        node[positionKey] = {start, end};
 
         if (Array.isArray(children)) {
             children.forEach((child, ind) => {
