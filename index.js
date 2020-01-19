@@ -7,7 +7,11 @@ import rules from './src/rules/list.js'
 const linter = new Linter(rules);
 
 window.lint = function(str) {
-    return linter.lint(str);
+    try {
+        return linter.lint(str);
+    } catch (e) {
+        return [];
+    }
 };
 
 // TODO for test
