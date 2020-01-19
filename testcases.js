@@ -1,4 +1,5 @@
 const tests = [
+    /* 1 */
     `
     {
     "block": "warning",
@@ -9,6 +10,7 @@ const tests = [
 }
     `,
 
+    /* 2 */
     `
     {
     "block": "warning",
@@ -19,6 +21,7 @@ const tests = [
 }
     `,
 
+    /* 3 */
     `
     {
     "block": "warning",
@@ -36,7 +39,7 @@ const tests = [
 }
     `,
 
-
+    /* 4 */
     `
     {
     "block": "warning",
@@ -68,6 +71,7 @@ const tests = [
 }
     `,
 
+    /* 5 */
     `
     {
     "block": "warning",
@@ -78,6 +82,7 @@ const tests = [
 }
     `,
 
+    /* 6 */
     `
     {
     "block": "warning",
@@ -90,6 +95,7 @@ const tests = [
 }
     `,
 
+    /* 7 */
     `
     {
     "block": "warning",
@@ -101,6 +107,7 @@ const tests = [
 }
     `,
 
+    /* 8 */
     `
     {
     "block": "warning",
@@ -113,6 +120,7 @@ const tests = [
     `,
 
 
+    /* 9 */
     `
     {
     "block": "warning",
@@ -123,6 +131,7 @@ const tests = [
 }
     `,
 
+    /* 10 */
     `
     {
     "block": "warning",
@@ -133,7 +142,7 @@ const tests = [
 }
     `,
 
-
+    /* 11 */
     `
     [
     {
@@ -147,6 +156,7 @@ const tests = [
 ]
     `,
 
+    /* 12 */
     `
     [
     {
@@ -166,7 +176,7 @@ const tests = [
 
 
 
-
+    /* 13 */
     `
     {
    "block": "grid",
@@ -202,6 +212,7 @@ const tests = [
 }
     `,
 
+    /* 14 */
     `
     {
    "block": "grid",
@@ -237,7 +248,7 @@ const tests = [
 }
     `,
 
-
+    /* 15 */
     `
     {
   "block": "warning",
@@ -256,6 +267,41 @@ const tests = [
       }
   ]
 }
+    `,
+
+
+    /* 16 */
+    `
+    [
+    {
+        "block": "text",
+        "mods": { "type": "h2" }
+    },
+    { 
+        "block": "test",
+        "content": {
+            "block": "text",
+            "mods": { "type": "h1" }
+        }
+    }
+]
+    `,
+
+    /* 17 */
+    `
+    [
+    { 
+        "block": "test",
+        "content": {
+            "block": "text",
+            "mods": { "type": "h2" }
+        }
+    },
+    {
+        "block": "text",
+        "mods": { "type": "h1" }
+    }
+]
     `
 ];
 

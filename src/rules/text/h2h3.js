@@ -1,51 +1,88 @@
 import RuleBase from "../rulebase.js";
 import {Size, get} from "../utils.js";
-import {TextInvalidH3Position} from "../../error/errorlist.js";
+import {TextInvalidH2Position} from "../../error/errorlist.js";
 
+// TODO это copy-paste теста h1h2.js с заменой h1 -> h2 в методе isH1 и h2 -> h3 в методе isH2
 
-// TODO Считаем, что H2 единственный (хотя в общем случае это не так). Иначе такая же проблема, что и в buttonposition.js
-// Поэтому просто копипастим тест h1h2
 class H2H3 extends RuleBase {
     constructor() {
         super(['text']);
 
-        this.h3Nodes = [];
-        this.h2was = false;
+        /**
+         * @type {Map<BemNode, {node: BemNode, order: number}>}
+         */
+        this.h1ToH1ParentMap = new Map(); // {h1-node, h1-parent with order}
+        /**
+         * @type {Map<BemNode, Array<{node: BemNode, order: number}>>}
+         */
+        this.h2ParentToH2Map = new Map(); // {parent, h2-childs with order}
+
+        /** @type {number} */
+        this.order = 0;
     }
 
     getPhaseHandlersMap() {
         return {
-            [this.phases.in]: this.in.bind(this)
+            [this.phases.in]: this.in.bind(this),
+            [this.phases.end]: this.end.bind(this)
         }
     }
 
     in(node) {
+        if (this.isH1(node)) {
+            this.h1ToH1ParentMap.set(node, {node: node.parent, order: this.order++});
+
+            return;
+        }
+
+        if (this.isH2(node)) {
+            const parent = node.parent;
+
+            if (!this.h2ParentToH2Map.has(parent))
+                this.h2ParentToH2Map.set(parent, []);
+
+            const h2Nodes = this.h2ParentToH2Map.get(parent);
+
+            h2Nodes.push({node: node, order: this.order++});
+        }
+    }
+
+    end() {
+        const wrongH2 = new Set();
+
+        this.h1ToH1ParentMap.forEach(({node: parent, order: h1Order}) => {
+            for (let currentParent = parent; currentParent; currentParent = currentParent.parent) {
+                const h2Nodes = this.h2ParentToH2Map.get(currentParent);
+
+                if (!h2Nodes)
+                    continue;
+
+                h2Nodes.forEach(({node: h2Node, order: h2Order}) => {
+                    if (h2Order < h1Order)
+                        wrongH2.add(h2Node);
+                })
+            }
+        });
+
+        const errors = [];
+
+        wrongH2.forEach(node => {
+            errors.push(new TextInvalidH2Position(node.position));
+        });
+
+        return errors;
+    }
+
+    isH1(node) {
         const type = get(node.mods, 'type');
 
-        if (!type)
-            return;
+        return type && type === 'h2';
+    }
 
-        if (type === 'h3') {
-            this.h3Nodes.push(node);
+    isH2(node) {
+        const type = get(node.mods, 'type');
 
-            return;
-        }
-
-        // TODO Продолжаем анализировать только до первого h2
-        if (type === 'h2' && !this.h2was) {
-            this.h2was = true;
-
-            const errors = [];
-
-            this.h3Nodes.forEach(node => {
-                const error = new TextInvalidH3Position(node.location);
-
-                errors.push(error);
-            });
-
-            if (errors.length)
-                return errors;
-        }
+        return type && type === 'h3';
     }
 }
 

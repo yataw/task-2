@@ -28,7 +28,7 @@ class Linter {
         const mapper = new JsonSourceMap(stringTree);
         const root = mapper.getJson(stringTree);
 
-        this.next(root);
+        this.next(root, null);
         this.callAll(phases.end);
 
         // TODO filter errors
@@ -42,20 +42,21 @@ class Linter {
         this.errors = [];
     }
 
-    /* Вход может быть объектом или массивом (дерево или лес). Добавим виртуальный корень, всегда было дерево. */
+    /* Вход может быть объектом или массивом (дерево или лес). Добавим виртуальный корень, чтобы всегда было дерево. */
     attachRoot = str => `{"${CONTENT}":\n${str}\n}`;
 
     /**
      * @param {Object} node
+     * @param {BemNode} parent
      */
-    next = (node) => {
-        const bemNode = new BemNode(node);
+    next = (node, parent) => {
+        const bemNode = new BemNode(node, parent);
         const children = this.contentAsArray(node[CONTENT]);
 
         this.call(phases.in, bemNode);
 
         children.map((child) => {
-            this.next(child);
+            this.next(child, bemNode);
         });
 
         this.call(phases.out, bemNode);

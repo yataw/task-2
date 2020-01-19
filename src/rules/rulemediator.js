@@ -7,6 +7,7 @@ class RuleMediator {
         this.rules = rules;
 
         this.handlersMap = {};
+        this.alwaysCalledHandlers = [];
         this.buildMap();
     }
 
@@ -17,6 +18,12 @@ class RuleMediator {
 
             for (let phase in handlersMap) {
                 const handler = handlersMap[phase];
+
+                if (!selectors.length && phase !== phases.end) {
+                    this.alwaysCalledHandlers.push(handler);
+
+                    continue;
+                }
 
                 selectors.forEach(selector => {
                     const key = this.getKey(phase, selector);
@@ -39,35 +46,45 @@ class RuleMediator {
      */
     call(phase, bemNode) {
         const key = this.getKey(phase, bemNode.selector);
-        const handlers = this.handlersMap[key] || [];
+        let handlers = this.handlersMap[key] || [];
         let errors = [];
+
+        handlers = [...handlers, ...this.alwaysCalledHandlers];
 
         handlers.forEach(handler => {
             const handlerErrors = handler(bemNode);
 
-            if (!handlerErrors)
-                return;
-
-            if (Array.isArray(handlerErrors))
-                errors = [...handlerErrors, ...errors];
-            else
-                errors.push(handlerErrors);
+            errors = this.getMergedErrors(errors, handlerErrors);
         });
 
         return errors;
     }
 
     callAll(phase) {
-        const errors = [];
+        let errors = [];
 
         this.rules.forEach(rule => {
             const handler = rule.getPhaseHandlersMap()[phase];
 
-            if (handler)
-                errors.push(handler(null));
+            if (!handler)
+                return;
+
+            const handlerErrors = handler(null);
+
+            errors = this.getMergedErrors(errors, handlerErrors);
         });
 
-        return errors.filter(result => result);
+        return errors;
+    }
+
+    getMergedErrors(allErrors, otherErrors) {
+        if (!otherErrors)
+            return allErrors;
+
+        if (Array.isArray(otherErrors))
+            return [...allErrors, ...otherErrors];
+
+        return [...allErrors, otherErrors];
     }
 }
 
