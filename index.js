@@ -10,6 +10,9 @@ window.lint = function(str) {
     try {
         return linter.lint(str);
     } catch (e) {
+        // TODO
+        console.log(e);
+
         return [];
     }
 };

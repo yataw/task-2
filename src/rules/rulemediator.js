@@ -57,6 +57,8 @@ class RuleMediator {
 
                 errors = this.getMergedErrors(errors, handlerErrors);
             } catch (e) {
+                // TODO
+                console.log(e);
             }
         });
 
@@ -77,6 +79,8 @@ class RuleMediator {
 
                 errors = this.getMergedErrors(errors, handlerErrors);
             } catch (e) {
+                // TODO
+                console.log(e);
             }
         });
 
