@@ -11,11 +11,9 @@ window.lint = function(str) {
 };
 
 // TODO for test
-/*
-tests.forEach((test, ind) => {
+/*tests.forEach((test, ind) => {
     const res = window.lint(test);
 
     console.log('test: ' + (ind + 1));
     console.log(res);
-})
-*/
+})*/

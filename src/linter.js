@@ -79,8 +79,9 @@ class Linter {
     }
 
     contentAsArray(el) {
+        // TODO в тестовых страничках попадаются случаи, когда в массиве content лежит массив. Сделаем один плоский массив
         if (Array.isArray(el))
-            return el;
+            return el.flat(Infinity);
 
         return el ? [el] : [];
     }
